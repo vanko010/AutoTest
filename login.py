@@ -36,5 +36,5 @@ for data in db:
                 alert.accept()
         except Exception as e:
             print("Case fail")
-time.sleep3
+time.sleep(3)
 driver.close()
