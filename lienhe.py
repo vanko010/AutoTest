@@ -37,7 +37,7 @@ def checkhovaten():
                 noidung.send_keys("Test liên hệ")
                 # mbv.send_keys("1231123")
                 btngui.click()
-                time.sleep(3)
+                time.sleep(1)
                 try:
                     alert = driver.switch_to.alert
                     if alert.text == "Họ và tên chưa hợp lệ, vui lòng nhập lại!":
