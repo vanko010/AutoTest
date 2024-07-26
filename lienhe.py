@@ -4,16 +4,19 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.alert import Alert
+from webdriver_manager.chrome import ChromeDriverManager
 import json
 import xpath
 
 def checkhovaten():
-    driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver')
-    # Mở trình duyệt ở chế độ toàn màn hình
-    driver.maximize_window()
-    # Truy cập trang web
-    driver.get("https://webdemo5.pavietnam.vn/2020_hctechco/lien-he")
+    # #Code chạy linux
+    # driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver')
 
+    #Code chạy window
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+
+    driver.maximize_window()
+    driver.get("https://webdemo5.pavietnam.vn/2020_hctechco/lien-he")
     with open("datahovaten.json", "r", encoding='utf-8') as file_hovaten:
         dbhovaten = json.load(file_hovaten)
     hovaten = driver.find_element(By.XPATH, xpath.xhovaten)
@@ -62,10 +65,14 @@ def checkhovaten():
                 # mbv.clear()
     driver.close()
 def checksdt():
-    driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver')
-    # Mở trình duyệt ở chế độ toàn màn hình
+    # #Code chạy linux
+    # driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver')
+    # driver.maximize_window()
+    # driver.get("https://webdemo5.pavietnam.vn/2020_hctechco/lien-he")
+
+    #Code chạy window
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     driver.maximize_window()
-    # Truy cập trang web
     driver.get("https://webdemo5.pavietnam.vn/2020_hctechco/lien-he")
     hovaten = driver.find_element(By.XPATH, xpath.xhovaten)
     sdt = driver.find_element(By.XPATH, xpath.xsdt)
