@@ -112,3 +112,4 @@ def checksdt():
             tieude.clear()
             noidung.clear()
             # mbv.clear()
+    driver.quit()
