@@ -4,15 +4,19 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.alert import Alert
+from webdriver_manager.chrome import ChromeDriverManager
 import xpath
 import json
 
 def login():
-    driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver')
-    # Truy cập trang web
+    # #Code chạy linux 
+    # driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver')
+    
+    #Code chạy window
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    
     driver.get("https://webdemo5.pavietnam.vn/2020_hctechco/myadmin/index.php?module=login")
     #load data tài khoản
-
     with open("dataTK.json", "r", encoding='utf-8') as f:
         db = json.load(f)
     login_true = "Trang quản trị"
@@ -30,14 +34,22 @@ def login():
             try:
                 title = driver.title
                 if title == login_true:
-                    print(f"Case {counter} true")
+                    if counter == 35:
+                         print(f"Case {counter} true -> Passed")
+                    else:
+                        print (f"Case {counter} là bug -> Check lại")
                     break
                 else:
-                    time.sleep(2)
+                    time.sleep(2) 
                     alert = Alert(driver)
                     alert.accept()
             except Exception as e:
-                print(f"Case {counter} fail")
+                if counter != 35:
+                    print(f"Case {counter} check login fail")
+                    print("-> Passed")
+                else:
+                    print(f"Case {counter} là bug -> Check lại")
+                    print("-> Fail")
             counter += 1
     time.sleep(3)
     driver.close()
