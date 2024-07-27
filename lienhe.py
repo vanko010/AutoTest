@@ -20,13 +20,13 @@ def setup_driver():
 def load_file(fileload):
     with open(fileload, "r", encoding='utf-8') as file_hovaten:
         return json.load(file_hovaten)
-def fill_hovaten(driver, data):
+def fill_data(driver, data):
     driver.find_element(By.XPATH, xpath.xhovaten).send_keys(data["hovaten"])
-    driver.find_element(By.XPATH, xpath.xsdt).send_keys("0987654321")
-    driver.find_element(By.XPATH, xpath.xemail).send_keys("test@gmail.com")
-    driver.find_element(By.XPATH, xpath.xdiachi).send_keys("344 Huynh Tan Phat, phường Bình Thuận, quận 7, TPHCM")
-    driver.find_element(By.XPATH, xpath.xtieude).send_keys("Test Liên hệ")
-    driver.find_element(By.XPATH, xpath.xnoidung).send_keys("Test liên hệ")
+    driver.find_element(By.XPATH, xpath.xsdt).send_keys(data["sodienthoai"])
+    driver.find_element(By.XPATH, xpath.xemail).send_keys(data["email"])
+    driver.find_element(By.XPATH, xpath.xdiachi).send_keys(data["diachi"])
+    driver.find_element(By.XPATH, xpath.xtieude).send_keys(data["tieude"])
+    driver.find_element(By.XPATH, xpath.xnoidung).send_keys(data["noidung"])
     # driver.find_element(By.XPATH, xpath.xmbv).send_keys("1231123")
 def submit_form(driver):
     driver.find_element(By.XPATH,xpath.xgui).click()
@@ -58,7 +58,7 @@ def checkhovaten():
     dbhovaten = load_file ("datahovaten.json")
     counter = 1
     for data in dbhovaten:
-                fill_hovaten(driver,data)
+                fill_data(driver,data)
                 submit_form(driver)
                 time.sleep(1)
                 check_alert(driver,counter)
@@ -67,20 +67,12 @@ def checkhovaten():
 
     driver.close()
 
-def fill_sdt(driver,data):
-    driver.find_element(By.XPATH, xpath.xhovaten).send_keys("Lê Đoàn Vũ")
-    driver.find_element(By.XPATH, xpath.xsdt).send_keys(data["sodienthoai"])
-    driver.find_element(By.XPATH, xpath.xemail).send_keys("test@gmail.com")
-    driver.find_element(By.XPATH, xpath.xdiachi).send_keys("344 Huynh Tan Phat, phường Bình Thuận, quận 7, TPHCM")
-    driver.find_element(By.XPATH, xpath.xtieude).send_keys("Test Liên hệ")
-    driver.find_element(By.XPATH, xpath.xnoidung).send_keys("Test liên hệ")
-    # driver.find_element(By.XPATH, xpath.xmbv).send_keys("1231123")
 def checksdt():
     driver= setup_driver()
     dbsdt = load_file("dbsodienthoai.json")
     counter = 1
     for data in dbsdt:
-        fill_sdt(driver,data)
+        fill_data(driver,data)
         submit_form(driver)
         time.sleep(1)
         check_alert(driver,counter)
@@ -88,21 +80,12 @@ def checksdt():
         counter +=1
     driver.close()
 
-def fill_email(driver,data):
-    driver.find_element(By.XPATH, xpath.xhovaten).send_keys("Lê Đoàn Vũ")
-    driver.find_element(By.XPATH, xpath.xsdt).send_keys("0987654321")
-    driver.find_element(By.XPATH, xpath.xemail).send_keys(data["email"])
-    driver.find_element(By.XPATH, xpath.xdiachi).send_keys("344 Huynh Tan Phat, phường Bình Thuận, quận 7, TPHCM")
-    driver.find_element(By.XPATH, xpath.xtieude).send_keys("Test Liên hệ")
-    driver.find_element(By.XPATH, xpath.xnoidung).send_keys("Test liên hệ")
-    # driver.find_element(By.XPATH, xpath.xmbv).send_keys("1231123")
-
 def checkemail():
     driver = setup_driver()
     dbemail = load_file("dbemail.json")
     counter = 1
     for data in dbemail:
-        fill_email(driver,data)
+        fill_data(driver,data)
         submit_form(driver)
         time.sleep(1)
         check_alert(driver, counter)
@@ -110,43 +93,25 @@ def checkemail():
         counter += 1
     driver.close()
 
-def fill_diachi(driver, data):
-    driver.find_element(By.XPATH, xpath.xhovaten).send_keys("Lê Đoàn Vũ")
-    driver.find_element(By.XPATH, xpath.xsdt).send_keys("0987654321")
-    driver.find_element(By.XPATH, xpath.xemail).send_keys("test@gmail.com")
-    driver.find_element(By.XPATH, xpath.xdiachi).send_keys(data["diachi"])
-    driver.find_element(By.XPATH, xpath.xtieude).send_keys("Test Liên hệ")
-    driver.find_element(By.XPATH, xpath.xnoidung).send_keys("Test liên hệ")
-    # driver.find_element(By.XPATH, xpath.xmbv).send_keys("1231123")
-
 def checkdiachi():
     driver = setup_driver()
     dbdiachi = load_file("dbdiachi.json")
     counter = 1
     for data in dbdiachi:
-        fill_diachi(driver,data)
+        fill_data(driver,data)
         submit_form(driver)
         time.sleep(1)
         check_alert(driver,counter)
         clear_data(driver)
         counter += 1
     driver.close()
-
-def fill_tieude(driver, data):
-    driver.find_element(By.XPATH, xpath.xhovaten).send_keys("Lê Đoàn Vũ")
-    driver.find_element(By.XPATH, xpath.xsdt).send_keys("0987654321")
-    driver.find_element(By.XPATH, xpath.xemail).send_keys("test@gmail.com")
-    driver.find_element(By.XPATH, xpath.xdiachi).send_keys("344 Huynh Tan Phat, phường Bình Thuận, quận 7, TPHCM")
-    driver.find_element(By.XPATH, xpath.xtieude).send_keys(data["tieude"])
-    driver.find_element(By.XPATH, xpath.xnoidung).send_keys("Test liên hệ")
-    # driver.find_element(By.XPATH, xpath.xmbv).send_keys("1231123")
 
 def checktieude():
     driver = setup_driver()
     dbtieude = load_file("dbtieude.json")
     counter = 1
     for data in dbtieude:
-        fill_tieude(driver,data)
+        fill_data(driver,data)
         submit_form(driver)
         time.sleep(1)
         check_alert(driver,counter)
@@ -154,21 +119,12 @@ def checktieude():
         counter += 1
     driver.close()
 
-def fill_noidung(driver, data):
-    driver.find_element(By.XPATH, xpath.xhovaten).send_keys("Lê Đoàn Vũ")
-    driver.find_element(By.XPATH, xpath.xsdt).send_keys("0987654321")
-    driver.find_element(By.XPATH, xpath.xemail).send_keys("test@gmail.com")
-    driver.find_element(By.XPATH, xpath.xdiachi).send_keys("344 Huynh Tan Phat, phường Bình Thuận, quận 7, TPHCM")
-    driver.find_element(By.XPATH, xpath.xtieude).send_keys("Test liên hệ")
-    driver.find_element(By.XPATH, xpath.xnoidung).send_keys(data["noidung"])
-    # driver.find_element(By.XPATH, xpath.xmbv).send_keys("1231123")
-
 def checknoidung():
     driver = setup_driver()
     dbnoidung = load_file("dbtieude.json")
     counter = 1
     for data in dbnoidung:
-        fill_noidung(driver,data)
+        fill_data(driver,data)
         submit_form(driver)
         time.sleep(1)
         check_alert(driver,counter)
