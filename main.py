@@ -1,10 +1,24 @@
 import login
 import lienhe
-# Press the green button in the gutter to run the script.
+
 if __name__ == '__main__':
-    print("Check liên hệ - Họ và tên")
-    # lienhe.checkhovaten()
-    #print ("Check login admin")
-   # login.login()
-    # print("Check liên - Số điện thoại")
+    print ("Check Login")
+    login.login()
+    print("============================")
+    print("Check họ và tên")
+    lienhe.checkhovaten()
+    print("============================")
+    print("Check số điện thoại")
     lienhe.checksdt()
+    print("============================")
+    print("Check email")
+    lienhe.checkemail()
+    print("Check địa chỉ")
+    print("============================")
+    lienhe.checkdiachi()
+    print("Check tiêu đề")
+    print("============================")
+    lienhe.checktieude()
+    print("Check nội dung")
+    print("============================")
+    lienhe.checknoidung()

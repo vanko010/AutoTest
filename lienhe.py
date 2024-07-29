@@ -31,21 +31,6 @@ def fill_data(driver, data):
 def submit_form(driver):
     driver.find_element(By.XPATH,xpath.xgui).click()
     # driver.find_element(By.XPATH,xpath.xlamlai).click()
-def check_alert(driver,counter):
-    try:
-        alert = driver.switch_to.alert
-        if alert.text == "Họ và tên chưa hợp lệ, vui lòng nhập lại!":
-            print(f"Case {counter} Họ tên fail, nhập lại")
-        elif alert.text == "Yêu cầu của bạn đã được gửi!":
-            print(f"Case {counter} Yêu cầu đã được gửi")
-        elif alert.text == "Nhập mã bảo vệ chưa đúng!":
-            print(f"Case {counter} Yêu cầu chưa được gửi đi")
-        else:
-            print(f"Case {counter} Chưa nhập mã bảo vệ")
-            alert = Alert(driver)
-            alert.accept()
-    except:
-        print(f"{counter}Case ngoại lệ, check lại")
 def clear_data(driver):
     driver.find_element(By.XPATH, xpath.xhovaten).clear()
     driver.find_element(By.XPATH, xpath.xsdt).clear()
@@ -58,12 +43,43 @@ def checkhovaten():
     dbhovaten = load_file ("datahovaten.json")
     counter = 1
     for data in dbhovaten:
-                fill_data(driver,data)
-                submit_form(driver)
-                time.sleep(1)
-                check_alert(driver,counter)
-                clear_data(driver)
-                counter += 1
+        fill_data(driver, data)
+        submit_form(driver)
+        # time.sleep(1)
+
+        try:
+            alert = driver.switch_to.alert
+            alert_text = alert.text
+            alert.accept()
+
+            if counter == 4 or counter == 6:
+                print(f"Case {counter} check fail")
+                if alert_text == "Họ và tên chưa hợp lệ, vui lòng nhập lại!":
+                    print(f"Case {counter} -> Pass")
+                else:
+                    print(f"Case {counter} -> Fail")
+            else:
+                print(f"Case {counter} check true")
+                if alert_text == "Yêu cầu của bạn đã được gửi!":
+                    print(f"Case {counter} -> Pass")
+                elif alert_text == "Vui lòng nhập mã bảo vệ!":
+                    print(f"Case {counter} Chưa nhập mã bảo vệ")
+                else:
+                    print(f"Case {counter} -> Fail")
+
+        except:
+            try:
+                alert = driver.switch_to.alert
+                if alert.text == "Nhập mã bảo vệ chưa đúng!":
+                    print(f"{counter} mã bảo vệ sai")
+                else:
+                    print(f"Case {counter} ngoại lệ -> Check lại")
+                alert.accept()
+            except:
+                print(f"Case {counter} ngoại lệ -> Không có alert")
+
+        clear_data(driver)
+        counter += 1
 
     driver.close()
 
@@ -74,10 +90,47 @@ def checksdt():
     for data in dbsdt:
         fill_data(driver,data)
         submit_form(driver)
-        time.sleep(1)
-        check_alert(driver,counter)
+        # time.sleep(1)
+        try:
+            alert = driver.switch_to.alert
+            alert_text = alert.text
+            alert.accept()
+            if counter == 1 or counter == 5:
+                print(f"Case {counter} check true")
+                if alert_text == "Yêu cầu của bạn đã được gửi!":
+                    print(f"Case {counter} -> Pass")
+                else:
+                    if alert_text == "Vui lòng nhập mã bảo vệ!":
+                        print("Chưa nhập mã bảo vệ")
+                    elif alert.text == "Nhập mã bảo vệ chưa đúng!":
+                        print("Mã bảo vệ chưa đúng")
+                    else:
+                        print(f"Case {counter} -> Fail")
+            else:
+                print(f"Case {counter} check fail")
+                if alert_text == "Số điện thoại không hợp lệ!":
+                    print(f"Case {counter} -> Pass")
+                else:
+                    if alert_text == "Vui lòng nhập mã bảo vệ!":
+                        print("Chưa nhập mã bảo vệ")
+                    elif alert.text == "Nhập mã bảo vệ chưa đúng!":
+                        print("Mã bảo vệ chưa đúng")
+                    else:
+                        print(f"Case {counter} -> Fail")
+
+        except:
+            try:
+                alert = driver.switch_to.alert
+                if alert.text == "Nhập mã bảo vệ chưa đúng!":
+                    print(f"{counter} mã bảo vệ sai")
+                else:
+                    print(f"Case {counter} ngoại lệ -> Check lại")
+                alert.accept()
+            except:
+                print(f"Case {counter} ngoại lệ -> Không có alert")
+
         clear_data(driver)
-        counter +=1
+        counter += 1
     driver.close()
 
 def checkemail():
@@ -85,10 +138,47 @@ def checkemail():
     dbemail = load_file("dbemail.json")
     counter = 1
     for data in dbemail:
-        fill_data(driver,data)
+        fill_data(driver, data)
         submit_form(driver)
-        time.sleep(1)
-        check_alert(driver, counter)
+        # time.sleep(1)
+        try:
+            alert = driver.switch_to.alert
+            alert_text = alert.text
+            alert.accept()
+            if counter == 7 or counter == 8 or counter == 9:
+                print(f"Case {counter} check fail")
+                if alert_text == "Email không hợp lệ!":
+                    print(f"Case {counter} -> Pass")
+                else:
+                    if alert_text == "Vui lòng nhập mã bảo vệ!":
+                        print("Chưa nhập mã bảo vệ")
+                    elif alert.text == "Nhập mã bảo vệ chưa đúng!":
+                        print("Mã bảo vệ chưa đúng")
+                    else:
+                        print(f"Case {counter} -> Fail")
+            else:
+                print(f"Case {counter} check true")
+                if alert_text == "Yêu cầu của bạn đã được gửi!":
+                    print(f"Case {counter} -> Pass")
+                else:
+                    if alert_text == "Vui lòng nhập mã bảo vệ!":
+                        print("Chưa nhập mã bảo vệ")
+                    elif alert.text == "Nhập mã bảo vệ chưa đúng!":
+                        print("Mã bảo vệ chưa đúng")
+                    else:
+                        print(f"Case {counter} -> Fail")
+
+        except:
+            try:
+                alert = driver.switch_to.alert
+                if alert.text == "Nhập mã bảo vệ chưa đúng!":
+                    print(f"{counter} mã bảo vệ sai")
+                else:
+                    print(f"Case {counter} ngoại lệ -> Check lại")
+                alert.accept()
+            except:
+                print(f"Case {counter} ngoại lệ -> Không có alert")
+
         clear_data(driver)
         counter += 1
     driver.close()
@@ -98,23 +188,96 @@ def checkdiachi():
     dbdiachi = load_file("dbdiachi.json")
     counter = 1
     for data in dbdiachi:
-        fill_data(driver,data)
+        fill_data(driver, data)
         submit_form(driver)
-        time.sleep(1)
-        check_alert(driver,counter)
+        # time.sleep(1)
+        try:
+            alert = driver.switch_to.alert
+            alert_text = alert.text
+            alert.accept()
+            if counter >=3 or counter <= 5:
+                print(f"Case {counter} check fail")
+                if alert_text == "Địa chỉ không hợp lệ!":
+                    print(f"Case {counter} -> Pass")
+                else:
+                    if alert_text == "Vui lòng nhập mã bảo vệ!":
+                        print("Chưa nhập mã bảo vệ")
+                    elif alert.text == "Nhập mã bảo vệ chưa đúng!":
+                        print("Mã bảo vệ chưa đúng")
+                    else:
+                        print(f"Case {counter} -> Fail")
+            else:
+                print(f"Case {counter} check true")
+                if alert_text == "Yêu cầu của bạn đã được gửi!":
+                    print(f"Case {counter} -> Pass")
+                else:
+                    if alert_text == "Vui lòng nhập mã bảo vệ!":
+                        print("Chưa nhập mã bảo vệ")
+                    elif alert.text == "Nhập mã bảo vệ chưa đúng!":
+                        print("Mã bảo vệ chưa đúng")
+                    else:
+                        print(f"Case {counter} -> Fail")
+
+        except:
+            try:
+                alert = driver.switch_to.alert
+                if alert.text == "Nhập mã bảo vệ chưa đúng!":
+                    print(f"{counter} mã bảo vệ sai")
+                else:
+                    print(f"Case {counter} ngoại lệ -> Check lại")
+                alert.accept()
+            except:
+                print(f"Case {counter} ngoại lệ -> Không có alert")
+
         clear_data(driver)
         counter += 1
     driver.close()
-
 def checktieude():
     driver = setup_driver()
     dbtieude = load_file("dbtieude.json")
     counter = 1
     for data in dbtieude:
-        fill_data(driver,data)
+        fill_data(driver, data)
         submit_form(driver)
-        time.sleep(1)
-        check_alert(driver,counter)
+        # time.sleep(1)
+        try:
+            alert = driver.switch_to.alert
+            alert_text = alert.text
+            alert.accept()
+            if counter >= 5:
+                print(f"Case {counter} check fail")
+                if alert_text == "Tiêu đề không hợp lệ!":
+                    print(f"Case {counter} -> Pass")
+                else:
+                    if alert_text == "Vui lòng nhập mã bảo vệ!":
+                        print("Chưa nhập mã bảo vệ")
+                    elif alert.text == "Nhập mã bảo vệ chưa đúng!":
+                        print("Mã bảo vệ chưa đúng")
+                    else:
+                        print(f"Case {counter} -> Fail")
+            else:
+                print(f"Case {counter} check true")
+                if alert_text == "Yêu cầu của bạn đã được gửi!":
+                    print(f"Case {counter} -> Pass")
+                else:
+                    if alert_text == "Vui lòng nhập mã bảo vệ!":
+                        print("Chưa nhập mã bảo vệ")
+                    elif alert.text == "Nhập mã bảo vệ chưa đúng!":
+                        print("Mã bảo vệ chưa đúng")
+                    else:
+                        print(f"Case {counter} -> Fail")
+
+        except:
+            try:
+                alert = driver.switch_to.alert
+                if alert.text == "Nhập mã bảo vệ chưa đúng!":
+                    print(f"{counter} mã bảo vệ sai")
+                else:
+                    print(f"Case {counter} ngoại lệ -> Check lại")
+                alert.accept()
+            except:
+                print(f"Case {counter} ngoại lệ -> Không có alert")
+
         clear_data(driver)
         counter += 1
     driver.close()
@@ -124,10 +287,47 @@ def checknoidung():
     dbnoidung = load_file("dbtieude.json")
     counter = 1
     for data in dbnoidung:
-        fill_data(driver,data)
+        fill_data(driver, data)
         submit_form(driver)
-        time.sleep(1)
-        check_alert(driver,counter)
+        # time.sleep(1)
+        try:
+            alert = driver.switch_to.alert
+            alert_text = alert.text
+            alert.accept()
+            if counter >= 5:
+                print(f"Case {counter} check fail")
+                if alert_text == "Nội dung không hợp lệ!":
+                    print(f"Case {counter} -> Pass")
+                else:
+                    if alert_text == "Vui lòng nhập mã bảo vệ!":
+                        print("Chưa nhập mã bảo vệ")
+                    elif alert.text == "Nhập mã bảo vệ chưa đúng!":
+                        print("Mã bảo vệ chưa đúng")
+                    else:
+                        print(f"Case {counter} -> Fail")
+            else:
+                print(f"Case {counter} check true")
+                if alert_text == "Yêu cầu của bạn đã được gửi!":
+                    print(f"Case {counter} -> Pass")
+                else:
+                    if alert_text == "Vui lòng nhập mã bảo vệ!":
+                        print("Chưa nhập mã bảo vệ")
+                    elif alert.text == "Nhập mã bảo vệ chưa đúng!":
+                        print("Mã bảo vệ chưa đúng")
+                    else:
+                        print(f"Case {counter} -> Fail")
+
+        except:
+            try:
+                alert = driver.switch_to.alert
+                if alert.text == "Nhập mã bảo vệ chưa đúng!":
+                    print(f"{counter} mã bảo vệ sai")
+                else:
+                    print(f"Case {counter} ngoại lệ -> Check lại")
+                alert.accept()
+            except:
+                print(f"Case {counter} ngoại lệ -> Không có alert")
+
         clear_data(driver)
         counter += 1
     driver.close()
