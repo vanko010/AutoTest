@@ -5,15 +5,17 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.alert import Alert
 # from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.chrome import ChromeDriverManager
+
 import xpath
 import json
 
 def login():
     # Code chạy linux
-    driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver')
+    # driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver')
     
     #Code chạy window
-    # driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     
     driver.get("https://webdemo5.pavietnam.vn/2020_hctechco/myadmin/index.php?module=login")
     #load data tài khoản

@@ -7,27 +7,47 @@ from selenium.webdriver.common.alert import Alert
 # from webdriver_manager.chrome import ChromeDriverManager
 import json
 import xpath
+import requests
+from io import BytesIO
+from PIL import Image
+import pytesseract
 
 def setup_driver():
-    # #Code chạy linux
-    driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver')
+    # Đường dẫn đến chromedriver
+    chromedriver_path = '/usr/local/bin/chromedriver'
 
-    #Code chạy window
-    # driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    # Khởi tạo đối tượng Service với đường dẫn đến chromedriver
+    service = Service(chromedriver_path)
+
+    # Tạo driver Chrome với service đã khởi tạo
+    driver = webdriver.Chrome(service=service)
+
+    # Mở rộng cửa sổ trình duyệt
     driver.maximize_window()
     driver.get("https://webdemo5.pavietnam.vn/2020_hctechco/lien-he")
     return driver
 def load_file(fileload):
     with open(fileload, "r", encoding='utf-8') as file_hovaten:
         return json.load(file_hovaten)
-def fill_data(driver, data):
+
+def get_captcha_text(driver):
+    captcha_element = driver.find_element(By.XPATH, xpath.xcaptcha)
+    captcha_image_url = captcha_element.get_attribute('src')
+    response = requests.get(captcha_image_url)
+    img = Image.open(BytesIO(response.content))
+    # Sử dụng OCR để nhận diện captcha
+    captcha_text = pytesseract.image_to_string(img)
+    return captcha_text.strip()
+
+def fill_data(driver, data, captcha_text=None):
     driver.find_element(By.XPATH, xpath.xhovaten).send_keys(data["hovaten"])
     driver.find_element(By.XPATH, xpath.xsdt).send_keys(data["sodienthoai"])
     driver.find_element(By.XPATH, xpath.xemail).send_keys(data["email"])
     driver.find_element(By.XPATH, xpath.xdiachi).send_keys(data["diachi"])
     driver.find_element(By.XPATH, xpath.xtieude).send_keys(data["tieude"])
     driver.find_element(By.XPATH, xpath.xnoidung).send_keys(data["noidung"])
-    # driver.find_element(By.XPATH, xpath.xmbv).send_keys("1231123")
+    if captcha_text:
+        driver.find_element(By.XPATH, xpath.xmbv).send_keys(captcha_text)
 def submit_form(driver):
     driver.find_element(By.XPATH,xpath.xgui).click()
     # driver.find_element(By.XPATH,xpath.xlamlai).click()
@@ -43,6 +63,7 @@ def checkhovaten():
     dbhovaten = load_file ("datahovaten.json")
     counter = 1
     for data in dbhovaten:
+        captcha_text = get_captcha_text(driver)
         fill_data(driver, data)
         submit_form(driver)
         # time.sleep(1)
