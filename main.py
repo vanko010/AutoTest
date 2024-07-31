@@ -6,7 +6,7 @@ if __name__ == '__main__':
     # print ("Check Login")
     # login.login()
     # print("============================")
-    print("Check họ và tên")
+    # print("Check họ và tên")
     lienhe.checkhovaten()
     # print("============================")
     # print("Check số điện thoại")
@@ -23,5 +23,3 @@ if __name__ == '__main__':
     # print("Check nội dung")
     # print("============================")
     # lienhe.checknoidung()
-
-    # captcha.giai_captcha()

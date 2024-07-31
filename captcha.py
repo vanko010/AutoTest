@@ -1,60 +1,44 @@
-from PIL import Image
-import pytesseract
-import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-import os
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from PIL import Image
+import time
 
-def setup_driver():
-    # Code chạy windows
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+
+def capture_captcha(driver_url, captcha_id, screenshot_path='screenshot.png', captcha_image_path='captcha.png'):
+    # Khởi động trình duyệt
+    driver = webdriver.Chrome()
+
+    # Truy cập trang web chứa captcha
+    driver.get(driver_url)
     driver.maximize_window()
-    driver.get("https://webdemo5.pavietnam.vn/2020_hctechco/lien-he")
-    return driver
+    # Chờ cho phần tử captcha xuất hiện
+    wait = WebDriverWait(driver, 10)
+    captcha_element = wait.until(EC.presence_of_element_located((By.ID, captcha_id)))
 
-def wait_for_element(driver, xpath, timeout=10):
-    """Chờ cho phần tử xuất hiện trên trang"""
-    end_time = time.time() + timeout
-    while time.time() < end_time:
-        try:
-            element = driver.find_element(By.XPATH, xpath)
-            if element.is_displayed():
-                return element
-        except:
-            pass
-        time.sleep(1)
-    raise Exception(f"Element with xpath {xpath} not found")
+    # Lấy vị trí và kích thước của captcha
+    location = captcha_element.location
+    size = captcha_element.size
 
-def giai_captcha(driver, xpath):
-    captcha_element = wait_for_element(driver, xpath)
-    captcha_image = captcha_element.screenshot_as_png
-    temp_image_path = 'captcha_temp.png'
+    # Chụp màn hình toàn bộ trang
+    driver.save_screenshot(screenshot_path)
 
-    # Lưu ảnh captcha tạm thời
-    with open(temp_image_path, 'wb') as file:
-        file.write(captcha_image)
+    # Mở ảnh chụp màn hình và cắt phần captcha
+    x = location['x']
+    y = location['y']
+    width = size['width']
+    height = size['height']
+    im = Image.open(screenshot_path)
+    im = im.crop((x, y, x + width, y + height))
+    im.save(captcha_image_path)
 
-    # Mở và xử lý ảnh
-    with Image.open(temp_image_path) as anh:
-        anh = anh.convert('L')  # Chuyển đổi ảnh thành ảnh đen trắng
-        anh = anh.point(lambda x: 0 if x < 140 else 255)  # Chuyển đổi ngưỡng
+    # Hiển thị ảnh captcha (tuỳ chọn)
+    im.show()
 
-        # Sử dụng pytesseract để nhận diện văn bản từ ảnh
-        van_ban_captcha = pytesseract.image_to_string(anh, config='--psm 8')  # Sử dụng mode nhận diện ký tự đơn
+    # Chờ một thời gian để xem ảnh (tuỳ chọn)
+    time.sleep(10)
 
-    os.remove(temp_image_path)  # Xóa ảnh tạm thời
 
-    # Lọc và trả về văn bản captcha
-    van_ban_captcha = ''.join(filter(str.isalnum, van_ban_captcha))
-    return van_ban_captcha
-
-# Ví dụ sử dụng:
-driver = setup_driver()
-van_ban_captcha = giai_captcha(driver, "//img[@id='img_contact_cap']")
-print(f'Văn bản CAPTCHA: {van_ban_captcha}')
-
-# Không đóng cửa sổ trình duyệt
-driver.close()  # Không cần phải gọi driver.close() ở đây
-driver.quit()   # Không cần phải gọi driver.quit() ở đây
+# Sử dụng hàm
+capture_captcha("https://webdemo5.pavietnam.vn/2020_hctechco/lien-he", 'img_contact_cap')
